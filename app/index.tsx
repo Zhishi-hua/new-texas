@@ -7,7 +7,7 @@ export default function Index() {
   return (
     <SafeAreaView className="flex-1 bg-[#040914]">
       <TexasHeader />
-      <View className="px-6">
+      <View className="flex-1 px-6 mt-36">
         <RoomList />
       </View>
     </SafeAreaView>

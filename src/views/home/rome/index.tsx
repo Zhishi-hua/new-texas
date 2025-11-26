@@ -1,62 +1,72 @@
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 
 const rooms = [
   {
     title: '新手房间',
-    subtitle: 'Entry-Level\nNo Entrance Fee',
+    peple: '0 / 6',
+    subtitle: '盲注: 5-10',
     chips: '0 Chips to Enter | 10,000',
     badge: 'Oval',
   },
   {
     title: '中级房间',
-    subtitle: '1,000 Chips to Enter',
-    chips: 'Max Bett 00,000',
+    peple: '0 / 6',
+    subtitle: '盲注: 25-50',
+    chips: '500-5000',
     badge: 'Chip',
   },
   {
     title: '高级房间',
-    subtitle: '100,000 Chips to Enter\nUnlimited Betting',
-    chips: 'Unlimited',
+    peple: '0 / 6',
+    subtitle: '盲注: 100-200',
+    chips: '2000-20000',
     badge: 'Crown',
     highlight: true,
   },
   {
     title: '极速桌-微额',
-    subtitle: '1,000 Chips to Enter',
-    chips: 'Max Bett 00,000',
+    peple: '0 / 9',
+    subtitle: '盲注: 10-20',
+    chips: '200-2000',
     badge: 'Chip',
   },
   {
     title: '极速桌-中额',
-    subtitle: '1,000,000 Chips to Enter',
-    chips: 'Max Bett 00,000',
+    peple: '0 / 9',
+    subtitle: '盲注: 100-200',
+    chips: '2000-20000',
     badge: 'Chip',
   },
   {
     title: '高级无限桌',
-    subtitle: '1,000,000 Chips to Enter',
-    chips: 'Max Bett 00,000',
+    peple: '0 / 6',
+    subtitle: '盲注: 500-1000',
+    chips: '10000-200000',
     badge: 'Chip',
   },
   {
     title: '锦标赛桌',
-    subtitle: '1,000,000 Chips to Enter',
-    chips: 'Max Bett 00,000',
+    peple: '0 / 6',
+    subtitle: '盲注: 100-200',
+    chips: '5000',
     badge: 'Chip',
   },
 ];
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
-const SIDE_PADDING = 24;
-const CARD_GAP = 24;
-const MAX_VISIBLE_CARDS = 3;
+const SIDE_PADDING = 0;
+const CARD_GAP = 36;
+const MAX_VISIBLE_CARDS = 4;
 const CARD_WIDTH = Math.max(
-  240,
+  360,
   Math.min(
-    320,
+    430,
     (WINDOW_WIDTH - SIDE_PADDING * 2 - CARD_GAP * (MAX_VISIBLE_CARDS - 1)) / MAX_VISIBLE_CARDS,
   ),
 );
+const VISIBLE_WIDTH = CARD_WIDTH * MAX_VISIBLE_CARDS + CARD_GAP * (MAX_VISIBLE_CARDS - 1);
+const VIEWPORT_WIDTH = Math.min(WINDOW_WIDTH - SIDE_PADDING * 2, VISIBLE_WIDTH);
 
 const Badge = ({ type }: { type: string }) => {
   if (type === 'Chip') {
@@ -77,51 +87,68 @@ const Badge = ({ type }: { type: string }) => {
 };
 
 export function RoomList() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   return (
-    <View className="mt-20">
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={CARD_WIDTH + CARD_GAP}
-        decelerationRate="fast"
-        contentContainerStyle={{
-          paddingHorizontal: SIDE_PADDING,
-        }}
-      >
-        {rooms.map((room, index) => (
-          <View
-            key={room.title}
-            style={{
-              width: CARD_WIDTH,
-              marginRight: index === rooms.length - 1 ? 0 : CARD_GAP,
-            }}
-            className={`rounded-3xl border px-6 py-8 ${
-              room.highlight ? 'border-amber-300 bg-[#f4d27d]' : 'border-slate-600/50 bg-[#0c1221]'
-            }`}
-          >
-            <Badge type={room.badge} />
-            <Text
-              className={`mt-6 text-2xl font-semibold ${
-                room.highlight ? 'text-[#2b1a05]' : 'text-slate-100'
-              }`}
-            >
-              {room.title}
-            </Text>
-            <Text
-              className={`mt-3 text-base leading-6 ${
-                room.highlight ? 'text-[#2b1a05]/80' : 'text-slate-300'
-              }`}
-            >
-              {room.subtitle}
-            </Text>
-            <View className="mt-8 border-t border-white/10 pt-4">
-              <Text className={`text-sm ${room.highlight ? 'text-[#2b1a05]' : 'text-amber-200'}`}>
-                {room.chips}
-              </Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+    <View className="mt-20 items-center">
+      <View style={{ width: VIEWPORT_WIDTH }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={CARD_WIDTH + CARD_GAP}
+          decelerationRate="fast"
+          contentContainerStyle={{
+            paddingHorizontal: SIDE_PADDING,
+          }}
+        >
+          {rooms.map((room, index) => {
+            const isHovered = hoveredIndex === index;
+            const baseBackground = room.highlight ? 'bg-[#F5CD20]' : 'bg-[#010610]/50';
+            const baseBorder = room.highlight ? 'border-amber-300' : 'border-[#0c1b2E]';
+            const borderClass = isHovered ? 'border-amber-300' : baseBorder;
+            const chipsColor = room.highlight ? 'text-[#2b1a05]' : 'text-amber-200';
+
+            return (
+              <Pressable
+                key={room.title}
+                style={{
+                  width: CARD_WIDTH,
+                  marginRight: index === rooms.length - 1 ? 0 : CARD_GAP,
+                }}
+                onHoverIn={() => setHoveredIndex(index)}
+                onHoverOut={() => setHoveredIndex((prev) => (prev === index ? null : prev))}
+                className={`rounded-3xl flex items-center justify-center  border-2 ${borderClass} ${baseBackground} px-14 py-10 min-h-[480px] min-w-[280px] flex flex-col justify-between`}
+              >
+                <Badge type={room.badge} />
+                <Text
+                  className={`mt-6 text-2xl font-semibold ${
+                    room.highlight ? 'text-[#2b1a05]' : 'text-slate-100'
+                  }`}
+                >
+                  {room.title}
+                </Text>
+                <Text
+                  className={`mt-3 text-base leading-6 ${
+                    room.highlight ? 'text-[#2b1a05]/80' : 'text-slate-300'
+                  }`}
+                >
+                  {room.peple}
+                </Text>
+                <Text
+                  className={`mt-3 text-base leading-6 ${
+                    room.highlight ? 'text-[#2b1a05]/80' : 'text-slate-300'
+                  }`}
+                >
+                  {room.subtitle}
+                </Text>
+                <View className="mt-8 border-t border-white/10 pt-4">
+                  <Text className={`text-sm ${chipsColor}`}>{room.chips}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </View>
     </View>
   );
 }
