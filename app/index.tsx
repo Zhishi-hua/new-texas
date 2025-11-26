@@ -45,7 +45,7 @@ const Badge = ({ type }: { type: string }) => {
 export default function Index() {
   return (
     <SafeAreaView className="flex-1 bg-[#040914]">
-      <View className="flex-1 mt-3">
+      <View className="flex-1">
         <TexasHeader />
 
         <View className="mt-10 flex-row gap-4 flex-wrap">
