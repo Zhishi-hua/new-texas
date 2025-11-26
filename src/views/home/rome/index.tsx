@@ -2,23 +2,47 @@ import { Text, View } from 'react-native';
 
 const rooms = [
   {
-    title: "Beginner's Room",
+    title: '新手房间',
     subtitle: 'Entry-Level\nNo Entrance Fee',
     chips: '0 Chips to Enter | 10,000',
     badge: 'Oval',
   },
   {
-    title: 'Intermediate Room',
+    title: '中级房间',
     subtitle: '1,000 Chips to Enter',
     chips: 'Max Bett 00,000',
     badge: 'Chip',
   },
   {
-    title: 'High Roller Room',
+    title: '高级房间',
     subtitle: '100,000 Chips to Enter\nUnlimited Betting',
     chips: 'Unlimited',
     badge: 'Crown',
     highlight: true,
+  },
+  {
+    title: '极速桌-微额',
+    subtitle: '1,000 Chips to Enter',
+    chips: 'Max Bett 00,000',
+    badge: 'Chip',
+  },
+  {
+    title: '极速桌-中额',
+    subtitle: '1,000,000 Chips to Enter',
+    chips: 'Max Bett 00,000',
+    badge: 'Chip',
+  },
+  {
+    title: '高级无限桌',
+    subtitle: '1,000,000 Chips to Enter',
+    chips: 'Max Bett 00,000',
+    badge: 'Chip',
+  },
+  {
+    title: '锦标赛桌',
+    subtitle: '1,000,000 Chips to Enter',
+    chips: 'Max Bett 00,000',
+    badge: 'Chip',
   },
 ];
 
@@ -42,7 +66,7 @@ const Badge = ({ type }: { type: string }) => {
 
 export function RoomList() {
   return (
-    <View className="mt-10 flex-row gap-4 flex-wrap">
+    <View className="mt-20 flex-row gap-4 flex-wrap">
       {rooms.map((room) => (
         <View
           key={room.title}
