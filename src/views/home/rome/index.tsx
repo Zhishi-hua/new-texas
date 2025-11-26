@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Dimensions, ScrollView, Text, View } from 'react-native';
 
 const rooms = [
   {
@@ -46,6 +46,18 @@ const rooms = [
   },
 ];
 
+const WINDOW_WIDTH = Dimensions.get('window').width;
+const SIDE_PADDING = 24;
+const CARD_GAP = 24;
+const MAX_VISIBLE_CARDS = 3;
+const CARD_WIDTH = Math.max(
+  240,
+  Math.min(
+    320,
+    (WINDOW_WIDTH - SIDE_PADDING * 2 - CARD_GAP * (MAX_VISIBLE_CARDS - 1)) / MAX_VISIBLE_CARDS,
+  ),
+);
+
 const Badge = ({ type }: { type: string }) => {
   if (type === 'Chip') {
     return (
@@ -66,36 +78,50 @@ const Badge = ({ type }: { type: string }) => {
 
 export function RoomList() {
   return (
-    <View className="mt-20 flex-row gap-4 flex-wrap">
-      {rooms.map((room) => (
-        <View
-          key={room.title}
-          className={`flex-1 rounded-3xl border px-6 py-8 ${
-            room.highlight ? 'border-amber-300 bg-[#f4d27d]' : 'border-slate-600/50 bg-[#0c1221]'
-          }`}
-        >
-          <Badge type={room.badge} />
-          <Text
-            className={`mt-6 text-2xl font-semibold ${
-              room.highlight ? 'text-[#2b1a05]' : 'text-slate-100'
+    <View className="mt-20">
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={CARD_WIDTH + CARD_GAP}
+        decelerationRate="fast"
+        contentContainerStyle={{
+          paddingHorizontal: SIDE_PADDING,
+        }}
+      >
+        {rooms.map((room, index) => (
+          <View
+            key={room.title}
+            style={{
+              width: CARD_WIDTH,
+              marginRight: index === rooms.length - 1 ? 0 : CARD_GAP,
+            }}
+            className={`rounded-3xl border px-6 py-8 ${
+              room.highlight ? 'border-amber-300 bg-[#f4d27d]' : 'border-slate-600/50 bg-[#0c1221]'
             }`}
           >
-            {room.title}
-          </Text>
-          <Text
-            className={`mt-3 text-base leading-6 ${
-              room.highlight ? 'text-[#2b1a05]/80' : 'text-slate-300'
-            }`}
-          >
-            {room.subtitle}
-          </Text>
-          <View className="mt-8 border-t border-white/10 pt-4">
-            <Text className={`text-sm ${room.highlight ? 'text-[#2b1a05]' : 'text-amber-200'}`}>
-              {room.chips}
+            <Badge type={room.badge} />
+            <Text
+              className={`mt-6 text-2xl font-semibold ${
+                room.highlight ? 'text-[#2b1a05]' : 'text-slate-100'
+              }`}
+            >
+              {room.title}
             </Text>
+            <Text
+              className={`mt-3 text-base leading-6 ${
+                room.highlight ? 'text-[#2b1a05]/80' : 'text-slate-300'
+              }`}
+            >
+              {room.subtitle}
+            </Text>
+            <View className="mt-8 border-t border-white/10 pt-4">
+              <Text className={`text-sm ${room.highlight ? 'text-[#2b1a05]' : 'text-amber-200'}`}>
+                {room.chips}
+              </Text>
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
+      </ScrollView>
     </View>
   );
 }
