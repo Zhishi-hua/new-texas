@@ -75,7 +75,7 @@ export function ConnectModal({ visible, onClose }: ConnectModalProps) {
       <Hint
         text="连接成功"
         backgroundColor="#F5DB38"
-        textColor="#ffffff"
+        textColor="#454017"
         visible={showSuccess}
         autoHide
         duration={2000}

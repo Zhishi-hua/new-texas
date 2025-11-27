@@ -1,4 +1,4 @@
-import { formatAddress } from '@/src/utils/wallet';
+import { Hint } from '@/src/components/hint';
 import { useWallet } from '@/src/views/home/connect/wallet-context';
 import { ConnectModal } from '@/src/views/modals/conect-modal';
 import { useRouter } from 'expo-router';
@@ -7,9 +7,15 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 export function TexasHeader() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showDisconnectHint, setShowDisconnectHint] = useState(false);
   const { session, status, disconnect } = useWallet();
   const isConnected = status === 'connected' && !!session;
   const router = useRouter();
+
+  const handleDisconnect = () => {
+    disconnect();
+    setShowDisconnectHint(true);
+  };
 
   return (
     <>
@@ -21,9 +27,10 @@ export function TexasHeader() {
           {isConnected ? (
             <TouchableOpacity
               className="rounded-full border border-amber-300 px-4 py-2"
-              onPress={disconnect}
+              onPress={handleDisconnect}
             >
-              <Text className="text-sm text-amber-300">{formatAddress(session?.address)}</Text>
+              {/* <Text className="text-sm text-amber-300">{formatAddress(session?.address)}</Text> */}
+              <Text className="text-sm text-amber-300">断开连接</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -44,6 +51,13 @@ export function TexasHeader() {
       </View>
 
       <ConnectModal visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
+      <Hint
+        text="已断开"
+        backgroundColor="#ef4444"
+        textColor="#ffffff"
+        visible={showDisconnectHint}
+        onHide={() => setShowDisconnectHint(false)}
+      />
     </>
   );
 }
