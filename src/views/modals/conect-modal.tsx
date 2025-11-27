@@ -1,5 +1,5 @@
 import { Hint } from '@/src/components/hint';
-import { useWallet } from '@/src/views/home/connect/wallet-context';
+import { useWallet } from '@/src/hooks/wallet-context';
 import { useState } from 'react';
 import { Modal, Text, TouchableOpacity } from 'react-native';
 import { ConnectKeyModal } from './conect-key';

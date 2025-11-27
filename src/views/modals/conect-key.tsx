@@ -1,4 +1,4 @@
-import { useWallet } from '@/src/views/home/connect/wallet-context';
+import { useWallet } from '@/src/hooks/wallet-context';
 import { useState } from 'react';
 import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 

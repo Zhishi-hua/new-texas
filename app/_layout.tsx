@@ -1,4 +1,4 @@
-import { WalletProvider } from '@/src/views/home/connect/wallet-context';
+import { WalletProvider } from '@/src/hooks/wallet-context';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';

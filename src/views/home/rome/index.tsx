@@ -1,3 +1,5 @@
+import { useWallet } from '@/src/hooks/wallet-context';
+import { BaseModal } from '@/src/views/modals/base-modal';
 import { useState } from 'react';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 
@@ -88,6 +90,17 @@ const Badge = ({ type }: { type: string }) => {
 
 export function RoomList() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isPromptVisible, setIsPromptVisible] = useState(false);
+  const { status, session } = useWallet();
+  const isConnected = status === 'connected' && !!session;
+
+  const handleRoomPress = () => {
+    if (!isConnected) {
+      setIsPromptVisible(true);
+      return;
+    }
+    // TODO: navigate to room once wallet connection is ready
+  };
 
   return (
     <View className="mt-20 items-center">
@@ -117,6 +130,7 @@ export function RoomList() {
                 }}
                 onHoverIn={() => setHoveredIndex(index)}
                 onHoverOut={() => setHoveredIndex((prev) => (prev === index ? null : prev))}
+                onPress={handleRoomPress}
                 className={`rounded-3xl flex items-center justify-center  border-2 ${borderClass} ${baseBackground} px-14 py-10 min-h-[480px] min-w-[280px] flex flex-col justify-between`}
               >
                 <Badge type={room.badge} />
@@ -149,6 +163,12 @@ export function RoomList() {
           })}
         </ScrollView>
       </View>
+      <BaseModal
+        visible={isPromptVisible}
+        onClose={() => setIsPromptVisible(false)}
+        title="请先连接钱包"
+        content="点击右上角的“连接钱包”按钮完成连接。"
+      />
     </View>
   );
 }

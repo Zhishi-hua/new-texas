@@ -1,5 +1,5 @@
 import { Hint } from '@/src/components/hint';
-import { useWallet } from '@/src/views/home/connect/wallet-context';
+import { useWallet } from '@/src/hooks/wallet-context';
 import { ConnectModal } from '@/src/views/modals/conect-modal';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
