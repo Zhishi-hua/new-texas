@@ -1,19 +1,13 @@
+import { formatAddress } from '@/src/utils/wallet';
+import { useWallet } from '@/src/views/home/connect/wallet-context';
 import { ConnectModal } from '@/src/views/modals/conect-modal';
 import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 export function TexasHeader() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const handleMetaMask = () => {
-    // TODO: 实现 MetaMask 连接逻辑
-    console.log('Connect with MetaMask');
-  };
-
-  const handlePrivateKey = () => {
-    // TODO: 实现私钥连接逻辑
-    console.log('Connect with Private Key');
-  };
+  const { session, status, disconnect } = useWallet();
+  const isConnected = status === 'connected' && !!session;
 
   return (
     <>
@@ -22,18 +16,28 @@ export function TexasHeader() {
           <Text className="text-xl font-bold text-amber-300 tracking-[4px]">♠ ♣ ♥ ♦</Text>
         </View>
         <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-            <Text className="text-sm text-slate-100">连接钱包</Text>
+          {isConnected ? (
+            <TouchableOpacity
+              className="rounded-full border border-amber-300 px-4 py-2"
+              onPress={disconnect}
+            >
+              <Text className="text-sm text-amber-300">{formatAddress(session?.address)}</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              className="rounded-full border bg-[#F2CC11] border-slate-500 px-4 py-2"
+              onPress={() => setIsModalVisible(true)}
+            >
+              <Text className="text-sm text-black">连接钱包</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity className="px-4 py-2">
+            <Image source={require('../assets/user/user.png')} className="w-2 h-2" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ConnectModal
-        visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onMetaMask={handleMetaMask}
-        onPrivateKey={handlePrivateKey}
-      />
+      <ConnectModal visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
     </>
   );
 }
