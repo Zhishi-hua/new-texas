@@ -1,4 +1,4 @@
-import { connectWithMetaMask, connectWithPrivateKey, WalletSession } from '@/src/api/service';
+import { connectWithMetaMask, connectWithPrivateKey, WalletSession } from '@/src/api/connet';
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 interface WalletContextValue {
