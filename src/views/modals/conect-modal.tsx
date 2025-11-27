@@ -1,3 +1,5 @@
+import { Hint } from '@/src/components/hint';
+import { useWallet } from '@/src/views/home/connect/wallet-context';
 import { useState } from 'react';
 import { Modal, Text, TouchableOpacity } from 'react-native';
 import { ConnectKeyModal } from './conect-key';
@@ -5,27 +7,33 @@ import { ConnectKeyModal } from './conect-key';
 interface ConnectModalProps {
   visible: boolean;
   onClose: () => void;
-  onMetaMask?: () => void;
-  onPrivateKey?: () => void;
 }
 
-export function ConnectModal({ visible, onClose, onMetaMask, onPrivateKey }: ConnectModalProps) {
+export function ConnectModal({ visible, onClose }: ConnectModalProps) {
   const [isKeyModalVisible, setIsKeyModalVisible] = useState(false);
+  const [error, setError] = useState<string | undefined>();
+  const [isBusy, setIsBusy] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const { connectMetaMask } = useWallet();
 
-  const handleMetaMask = () => {
-    onMetaMask?.();
-    onClose();
+  const handleMetaMask = async () => {
+    setIsBusy(true);
+    setError(undefined);
+    try {
+      await connectMetaMask();
+      setShowSuccess(true);
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setIsBusy(false);
+    }
   };
 
   const handlePrivateKey = () => {
+    setError(undefined);
     onClose();
     setIsKeyModalVisible(true);
-  };
-
-  const handleKeyConnect = (privateKey: string) => {
-    // TODO: 实现私钥连接逻辑
-    console.log('Connect with Private Key:', privateKey);
-    onPrivateKey?.();
   };
 
   return (
@@ -43,9 +51,14 @@ export function ConnectModal({ visible, onClose, onMetaMask, onPrivateKey }: Con
           >
             <TouchableOpacity
               onPress={handleMetaMask}
-              className="mb-4 flex-row items-center justify-center rounded-xl bg-blue-600 px-6 py-4 w-full"
+              disabled={isBusy}
+              className={`mb-4 flex-row items-center justify-center rounded-xl px-6 py-4 w-full ${
+                isBusy ? 'bg-blue-400' : 'bg-blue-600'
+              }`}
             >
-              <Text className="text-base font-semibold text-white">使用 MetaMask 连接</Text>
+              <Text className="text-base font-semibold text-white">
+                {isBusy ? '连接中…' : '使用 MetaMask 连接'}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -54,13 +67,19 @@ export function ConnectModal({ visible, onClose, onMetaMask, onPrivateKey }: Con
             >
               <Text className="text-base font-medium text-gray-900">使用私钥连接</Text>
             </TouchableOpacity>
+            {error ? <Text className="mt-4 text-sm text-red-400">{error}</Text> : null}
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-      <ConnectKeyModal
-        visible={isKeyModalVisible}
-        onClose={() => setIsKeyModalVisible(false)}
-        onConnect={handleKeyConnect}
+      <ConnectKeyModal visible={isKeyModalVisible} onClose={() => setIsKeyModalVisible(false)} />
+      <Hint
+        text="连接成功"
+        backgroundColor="#F5DB38"
+        textColor="#ffffff"
+        visible={showSuccess}
+        autoHide
+        duration={2000}
+        onHide={() => setShowSuccess(false)}
       />
     </>
   );
